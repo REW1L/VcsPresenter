@@ -3,9 +3,9 @@ import os
 from views.commitwindow import Ui_CommitWindow
 from Converters.Structures.FileChanges import *
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtWidgets
 
-class CommitView(QtGui.QMainWindow, Ui_CommitWindow):
+class CommitView(QtWidgets.QMainWindow, Ui_CommitWindow):
 
     def __init__(self, controller, hash, parent = None):
         super(CommitView, self).__init__(parent)
@@ -23,7 +23,7 @@ class CommitView(QtGui.QMainWindow, Ui_CommitWindow):
         else:
             self.lblLinesDeleted.setText("0")
 
-        filesModel = QtGui.QFileSystemModel()
+        filesModel = QtWidgets.QFileSystemModel()
         filesModel.setRootPath(controller.project.getPath())
         dir = QtCore.QDir()
         nameFilters = [x.strip().split(os.sep)[-1] for x in self.controller.getDiff(hash)]

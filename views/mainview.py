@@ -6,10 +6,10 @@ from Controller.Controller import Controller
 from Converters.Structures.FileChanges import *
 from views.commitview import CommitView
 
-from PySide import QtGui, QtCore
+from PySide2 import QtWidgets, QtCore, QtGui
 
 
-class MainView(QtGui.QMainWindow, Ui_MainWindow):
+class MainView(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def __init__(self, parent = None):
         super(MainView, self).__init__(parent)
@@ -20,8 +20,8 @@ class MainView(QtGui.QMainWindow, Ui_MainWindow):
         self.setPalette(palette)
         self.windows = []
 
-        # self.activityView.setBackgroundBrush(QtGui.QBrush(QtGui.QColor(0x302608)))
-        # self.activityView.drawBackground(QtGui.QPainter(), QtCore.QRectF(0, 0, self.activityView.maximumWidth(),
+        # self.activityView.setBackgroundBrush(QtWidgets.QBrush(QtWidgets.QColor(0x302608)))
+        # self.activityView.drawBackground(QtWidgets.QPainter(), QtCore.QRectF(0, 0, self.activityView.maximumWidth(),
         #                                                                self.activityView.maximumHeight()))
         self.btnOpenProject.clicked.connect(self.openProject)
         self.commitsView.doubleClicked.connect(self.showCommitInfo)
@@ -29,16 +29,16 @@ class MainView(QtGui.QMainWindow, Ui_MainWindow):
         self.btnVisualize.clicked.connect(self.visualize)
         self.commitLayout.parent().hide()
         self.authorLayout.parent().hide()
-        self.activityView.setScene(QtGui.QGraphicsScene())
+        self.activityView.setScene(QtWidgets.QGraphicsScene())
         self.controller = None
 
 
 
     @QtCore.Slot()
     def openProject(self):
-        dialog = QtGui.QFileDialog()
-        dialog.setFileMode(QtGui.QFileDialog.Directory)
-        dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+        dialog = QtWidgets.QFileDialog()
+        dialog.setFileMode(QtWidgets.QFileDialog.Directory)
+        dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly, True)
         path = dialog.getExistingDirectory(self, "Select Directory")
         if path != '':
             projectName = path.split(os.pathsep)[-1]
@@ -70,7 +70,7 @@ class MainView(QtGui.QMainWindow, Ui_MainWindow):
             self.drawLines(commits)
 
     def outCommitFiles(self, commits):
-        filesModel = QtGui.QFileSystemModel()
+        filesModel = QtWidgets.QFileSystemModel()
         filesModel.setNameFilterDisables(False)
         filesModel.setRootPath(self.controller.project.getPath())
         dir = QtCore.QDir()
@@ -81,7 +81,7 @@ class MainView(QtGui.QMainWindow, Ui_MainWindow):
             firstCommit = commits[-1]
             lastCommit = commits[0]
 
-            self.commitsView.setModel(QtGui.QStringListModel([x.hash for x in commits]))
+            self.commitsView.setModel(QtCore.QStringListModel([x.hash for x in commits]))
             dir.setNameFilters([x.strip().split(os.sep)[-1] for x in self.controller.getDiff(firstCommit.hash, lastCommit.hash)])
         filesModel.setNameFilters(dir.nameFilters())
         self.filesView.setModel(filesModel)
@@ -132,6 +132,8 @@ class MainView(QtGui.QMainWindow, Ui_MainWindow):
 
             addedQPen = QtGui.QPen(QtGui.QColor(0x00FF00))
             deletedQPen = QtGui.QPen(QtGui.QColor(0xFF0000))
+            addedQPen.setWidth(3)
+            deletedQPen.setWidth(3)
             height = self.activityView.minimumHeight() - 22
             startadd = [0,height]
             startdel = [0,height]
